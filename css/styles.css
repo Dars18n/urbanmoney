@@ -534,3 +534,64 @@ input[type=range]::-moz-range-thumb { width: 22px; height: 22px; border-radius: 
 .featured .avatar { aspect-ratio: 4 / 5; max-width: 220px; border-radius: 18px; box-shadow: 0 14px 30px rgba(16,24,40,.18); }
 .featured .avatar img { object-position: center 18%; }
 @media (min-width: 700px) { .featured { grid-template-columns: 220px 1fr; } }
+
+/* =====================================================================
+   How it works — winding journey line
+   ===================================================================== */
+.journey-sec { background-color: var(--tint);
+  background-image: radial-gradient(circle, rgba(16,24,40,.06) 1.6px, transparent 1.8px); background-size: 22px 22px; }
+.section__head--center { text-align: center; margin-left: auto; margin-right: auto; }
+.section__sub { color: var(--ink-2); margin: 10px 0 0; }
+.journey { position: relative; }
+.journey__svg { display: none; }
+.journey__steps { list-style: none; margin: 0; padding: 0; position: relative; display: grid; gap: 0; }
+/* mobile: vertical timeline */
+.jstep { position: relative; display: flex; gap: 18px; padding-bottom: 34px; }
+.jstep::after { content: ""; position: absolute; left: 31px; top: 66px; bottom: 4px; width: 3px; border-radius: 3px; background: linear-gradient(180deg, var(--neon), var(--lime), #1f2321); }
+.jstep:last-child::after { display: none; }
+.jstep__node { flex: none; width: 64px; height: 64px; border-radius: 50%; background: #1d201f; color: var(--neon); display: grid; place-items: center;
+  box-shadow: 0 0 0 6px rgba(47,227,155,.15), 0 10px 24px rgba(16,24,40,.25); position: relative; z-index: 2; }
+.jstep__node .i { width: 28px; height: 28px; }
+.jstep__body { position: relative; padding-top: 4px; }
+.jstep__ghost { position: absolute; top: -18px; left: -6px; font-size: 4.2rem; font-weight: 900; line-height: 1; color: var(--neon); opacity: .16; pointer-events: none; letter-spacing: -.04em; }
+.jstep__num { position: relative; display: block; font-size: 2rem; font-weight: 800; line-height: 1; color: var(--ink); margin-bottom: 8px; letter-spacing: -.02em; }
+.jstep h3 { position: relative; font-size: 1.15rem; margin-bottom: 6px; }
+.jstep p { position: relative; color: var(--ink-2); margin: 0; font-size: .97rem; max-width: 320px; }
+
+@media (min-width: 860px) {
+  .journey__svg { display: block; position: absolute; left: 0; top: 0; width: 100%; overflow: visible; }
+  .journey__track { fill: none; stroke: rgba(16,24,40,.07); stroke-width: 6; stroke-linecap: round; }
+  .journey__line { fill: none; stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 2.2s cubic-bezier(.45,.05,.25,1); }
+  .journey__arrow { fill: #12352a; stroke: #fff; stroke-width: 1.6; stroke-linejoin: round; opacity: 0; transition: opacity .4s 1.8s; filter: drop-shadow(0 1px 2px rgba(0,0,0,.25)); }
+  .journey.is-drawn .journey__arrow { opacity: .95; }
+  .journey__steps { position: static; display: block; }
+  .jstep { position: absolute; display: block; padding: 0; width: 0; height: 0; }
+  .jstep::after { display: none; }
+  .jstep__node { position: absolute; left: -38px; top: -38px; width: 76px; height: 76px; transform: scale(.6); opacity: 0; transition: transform .5s cubic-bezier(.3,1.5,.5,1), opacity .4s; }
+  .jstep__node .i { width: 32px; height: 32px; }
+  .journey.is-drawn .jstep__node { transform: none; opacity: 1; }
+  .journey.is-drawn .jstep--1 .jstep__node { transition-delay: .1s; }
+  .journey.is-drawn .jstep--2 .jstep__node { transition-delay: .7s; }
+  .journey.is-drawn .jstep--3 .jstep__node { transition-delay: 1.3s; }
+  .journey.is-drawn .jstep--4 .jstep__node { transition-delay: 1.9s; }
+  .jstep__body { position: absolute; width: 270px; top: 6px; }
+  .jstep__ghost { font-size: 5.6rem; top: -44px; }
+  .jstep__num { font-size: 2.6rem; }
+  /* odd steps: text to the left of the circle (right-aligned); even: to the right */
+  .jstep--1 .jstep__body, .jstep--3 .jstep__body { right: 64px; text-align: right; }
+  .jstep--1 .jstep__ghost, .jstep--3 .jstep__ghost { left: auto; right: -10px; }
+  .jstep--1 p, .jstep--3 p { margin-left: auto; }
+  .jstep--2 .jstep__body, .jstep--4 .jstep__body { left: 64px; }
+  .jstep--1 .jstep__body { top: -20px; }
+  .jstep--2 .jstep__body, .jstep--4 .jstep__body { top: -10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .journey__line { transition: none; } .jstep__node { transition: none !important; }
+}
+
+/* Official logo (supplied file) */
+.brand__logo { height: 40px; width: auto; display: block; }
+.brand__tag { padding-left: 10px; margin-left: 2px; border-left: 1.5px solid var(--line); font-size: .68rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); line-height: 1.25; max-width: 92px; }
+.brand--light .brand__logo { filter: brightness(0) invert(1); }
+.brand--light .brand__tag { color: rgba(255,255,255,.6); border-left-color: rgba(255,255,255,.2); }
+@media (max-width: 380px) { .brand__tag { display: none; } }

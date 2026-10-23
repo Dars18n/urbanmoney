@@ -30,7 +30,7 @@ window.SITE_CONFIG = {
     },
     // Path to the OFFICIAL logo supplied by Urban Money, e.g. "assets/logo.svg".
     // Leave empty to show a text wordmark until the file arrives.
-    logo: ""
+    logo: "assets/logo.png"
   },
 
   /* ---------- Lead handling ---------- */
@@ -186,10 +186,10 @@ window.SITE_CONFIG = {
   ],
 
   steps: [
-    { title: "Share your requirement", text: "Fill the form or call us – takes 2 minutes." },
-    { title: "We compare banks for you", text: "We shortlist the best-fit offers for your profile." },
-    { title: "We apply & handle documents", text: "Doorstep pickup and end-to-end paperwork support." },
-    { title: "Get sanction & disbursal", text: "We follow up with the lender until money reaches you." }
+    { icon: "step-share", title: "Share your requirement", text: "Fill the form or call us – takes 2 minutes." },
+    { icon: "step-compare", title: "We compare banks for you", text: "We shortlist the best-fit offers for your profile." },
+    { icon: "step-docs", title: "We apply & handle documents", text: "Doorstep pickup and end-to-end paperwork support." },
+    { icon: "step-bank", title: "Get sanction & disbursal", text: "We follow up with the lender until money reaches you." }
   ],
 
   /* ---------- Team (photo: path like "assets/team/vijay.jpg", or "" for initials) ---------- */

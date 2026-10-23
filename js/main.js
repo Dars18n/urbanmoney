@@ -77,7 +77,7 @@
   /* ---------------- Brand ---------------- */
   $$("[data-brand]").forEach(function (el) {
     el.innerHTML = B.logo
-      ? '<img src="' + esc(B.logo) + '" alt="' + esc(B.shortName) + ' logo" width="160" height="36">'
+      ? '<img class="brand__logo" src="' + esc(B.logo) + '" alt="Urban Money" height="40"><span class="brand__tag">Pune Regional Office</span>'
       : '<span class="brand__mark" aria-hidden="true">UM</span><span>Urban Money<span class="brand__sub">Pune Regional Office</span></span>';
   });
 
@@ -275,7 +275,46 @@
   $("#why-grid").innerHTML = C.why.map(function (w) {
     return '<div class="card why reveal"><div class="why__icon">' + icon(w.icon) + "</div><h3>" + esc(w.title) + "</h3><p>" + esc(w.text) + "</p></div>";
   }).join("");
-  $("#steps").innerHTML = C.steps.map(function (s) { return '<li class="step reveal"><h3>' + esc(s.title) + "</h3><p>" + esc(s.text) + "</p></li>"; }).join("");
+  /* ---------------- How it works: winding journey line ---------------- */
+  $("#steps").innerHTML = C.steps.map(function (s, i) {
+    var n = (i < 9 ? "0" : "") + (i + 1);
+    return '<li class="jstep jstep--' + (i + 1) + '"><span class="jstep__node">' + icon(s.icon) + '</span>' +
+      '<div class="jstep__body"><span class="jstep__ghost" aria-hidden="true">' + n + '</span><span class="jstep__num">' + n + "</span>" +
+      "<h3>" + esc(s.title) + "</h3><p>" + esc(s.text) + "</p></div></li>";
+  }).join("");
+  (function () {
+    var wrap = $("#journey"), svg = $("#journey-svg"), drawn = false;
+    var NS = "http://www.w3.org/2000/svg";
+    function layout() {
+      var W = wrap.clientWidth, steps = $$(".jstep", wrap);
+      if (W < 860) { svg.innerHTML = ""; steps.forEach(function (li) { li.style.left = li.style.top = ""; }); wrap.style.height = ""; return; }
+      var r = 125, A = 60, xL = Math.round(W * 0.34), xR = Math.round(W * 0.64);
+      var pts = [[xL, A], [xR + r, A + r], [xL - r, A + 3 * r], [xR + r, A + 4 * r]];
+      wrap.style.height = (A + 4 * r + 150) + "px";
+      var d = "M" + xL + " " + A + " H" + xR + " A" + r + " " + r + " 0 0 1 " + xR + " " + (A + 2 * r) +
+              " H" + xL + " A" + r + " " + r + " 0 0 0 " + xL + " " + (A + 4 * r) + " H" + (xR + r);
+      svg.setAttribute("viewBox", "0 0 " + W + " " + (A + 4 * r + 20));
+      svg.style.height = (A + 4 * r + 20) + "px";
+      svg.innerHTML = '<defs><linearGradient id="jg" gradientUnits="userSpaceOnUse" x1="' + (xL - r) + '" y1="0" x2="' + (xR + r) + '" y2="0">' +
+        '<stop offset="0" stop-color="#2fe39b"/><stop offset=".55" stop-color="#b6ef4a"/><stop offset="1" stop-color="#1f2321"/></linearGradient></defs>' +
+        '<path class="journey__track" d="' + d + '"/><path class="journey__line" id="jline" d="' + d + '" stroke="url(#jg)"/><g id="jarrows"></g>';
+      var line = $("#jline", svg), len = line.getTotalLength(), g = $("#jarrows", svg);
+      line.style.strokeDasharray = len; line.style.strokeDashoffset = drawn ? 0 : len;
+      // direction arrows along the path (skip spots near the step circles)
+      var out = "";
+      [0.1, 0.235, 0.43, 0.56, 0.78, 0.93].forEach(function (f) {
+        var p1 = line.getPointAtLength(len * f), p2 = line.getPointAtLength(len * f + 1);
+        var a = Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
+        out += '<path class="journey__arrow" d="M-6 -7 L7 0 L-6 7 L-2.5 0 Z" transform="translate(' + p1.x.toFixed(1) + " " + p1.y.toFixed(1) + ") rotate(" + a.toFixed(1) + ')"/>';
+      });
+      g.innerHTML = out;
+      steps.forEach(function (li, i) { li.style.left = pts[i][0] + "px"; li.style.top = pts[i][1] + "px"; });
+    }
+    function draw() { drawn = true; var l = $("#jline", svg); if (l) l.style.strokeDashoffset = 0; wrap.classList.add("is-drawn"); }
+    layout();
+    var t; window.addEventListener("resize", function () { clearTimeout(t); t = setTimeout(layout, 120); });
+    new IntersectionObserver(function (en, o) { if (en[0].isIntersecting) { setTimeout(draw, 150); o.disconnect(); } }, { threshold: .25 }).observe(wrap);
+  })();
 
   /* ---------------- EMI calculator ---------------- */
   var inr = function (v) { return "₹" + fmt.format(Math.round(v)); };
